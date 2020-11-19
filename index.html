@@ -7,32 +7,134 @@
     <title>Guest Book</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" integrity="sha512-f0tzWhCwVFS3WeYaofoLWkTP62ObhewQ1EZn65oSYDZUg1+CyywGKkWzm8BxaJj5HGKI72PnMH9jYyIFz+GH7g==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css" integrity="sha512-yHknP1/AwR+yx26cB1y0cjvQUMvEa2PFzt1c9LlS4pRQ5NOTZFWbhBig+X9G9eYW/8m0/4OXNx8pxJ6z57x0dw==" crossorigin="anonymous" />
+    <style>
+        .prev {
+            top: 50%;
+            left: 0;
+            position: absolute;
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+        .next {
+            top: 50%;
+            right: 0;
+            position: absolute;
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+        .alert {
+            position: fixed !important;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 111;
+            width: 100%;
+            display: none;
+        }
+    </style>
 </head>
 <body>
+<div class="modal fade" id="exampleModalEdit" tabindex="-1" aria-labelledby="exampleModalLabelEdit" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabelEdit">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form class="needs-validation edit-comments" novalidate>
+                <div class="modal-body">
+                    <div class="card-body">
+                        <h4 class="cart-title">Edit comment</h4>
+                        <div class="form-group">
+                            <label for="edit_message">message</label>
+                            <textarea name="edit_message" class="form-control" id="edit_message" cols="30" rows="2" required></textarea>
+                            <div class="valid-feedback">
+                                Looks good!
+                            </div>
+                            <div class="invalid-feedback">
+                                Please input your message.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary save-changes">Save changes</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="exampleModalComment" tabindex="-1" aria-labelledby="exampleModalLabelComment" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabelComment">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form class="needs-validation send-comments" novalidate>
+                <div class="modal-body">
+                    <div class="card-body">
+                        <h4 class="cart-title">Send comment</h4>
+                        <div class="form-group">
+                            <label for="commentator_name">name</label>
+                            <input type="text" class="form-control" id="commentator_name" required>
+                            <div class="valid-feedback">
+                                Looks good!
+                            </div>
+                            <div class="invalid-feedback">
+                                Please choose a username.
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="comment_message">message</label>
+                            <textarea name="comment_message" class="form-control" id="comment_message" cols="30" rows="2" required></textarea>
+                            <div class="valid-feedback">
+                                Looks good!
+                            </div>
+                            <div class="invalid-feedback">
+                                Please input your message.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary send-changes">Save changes</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <div class="container pt-4">
     <h1> Guest book</h1>
-    <form action="#" id="search">
+    <form method="post" id="search" class="needs-validation" novalidate>
         <div class="input-group">
-            <input type="text" class="form-control" id="search-field" placeholder="Authot...">
-            <input type="text" class="form-control" id="search-date-from" placeholder="01.02.2017">
-
-            <input type="text" class="form-control" id="search-date-to" placeholder="01.02.2019">
-
+            <input type="text" class="form-control" id="search-field" placeholder="Author..." required>
+            <input type="text" class="form-control date-input" id="search-date-from" placeholder="01.02.2017" required>
+            <input type="text" class="form-control date-input" id="search-date-to" placeholder="01.02.2019" required>
             <div class="input-group-append">
-                <button class="btn btn-outline-secondary">search</button>
+                <button type="submit" class="btn btn-outline-secondary search-button" form="search">search</button>
             </div>
         </div>
         <div class="form-group">
         </div>
     </form>
     <section id="comments-list">
-        <article class="card">
+        <article class="card note-card">
             <div class="card-body">
                 <h3  class="cart-title">UserName</h3>
                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi consequatur error maiores quisquam vitae. Aliquid blanditiis, dolorum, eligendi magni nesciunt nulla provident quisquam rem, reprehenderit sapiente similique tempore veniam voluptatum.</p>
             </div>
             <div class="card-footer">
-                <small>Pub date: 17:00 01.01.2019</small>
+                <small class="pub-date">Pub date: 17:00 01.01.2019</small>
                 <button class="btn btn-secondary btn-sm">comments this</button>
                 <button class="btn btn-primary btn-sm">edit this</button>
                 <button class="btn btn-danger btn-sm">delete this</button>
@@ -51,18 +153,30 @@
         </article>
     </section>
     <div class="card mt-2">
-        <form action="#" id="add-comments">
+        <form id="add-comments" class="needs-validation" novalidate>
             <div class="card-body">
                 <h4 class="cart-title">Add new comments</h4>
             <div class="form-group">
                 <label for="name">name</label>
-                <input type="text" class="form-control" id="name">
+                <input type="text" class="form-control" id="name" required>
+                <div class="valid-feedback">
+                    Looks good!
+                </div>
+                <div class="invalid-feedback">
+                    Please choose a username.
+                </div>
             </div>
             <div class="form-group">
                 <label for="message">message</label>
-                <textarea name="message" class="form-control" id="message" cols="30" rows="2"></textarea>
+                <textarea name="message" class="form-control" id="message" cols="30" rows="2" required></textarea>
+                <div class="valid-feedback">
+                    Looks good!
+                </div>
+                <div class="invalid-feedback">
+                    Please input your message.
+                </div>
             </div>
-                <button class="btn btn-primary">add comment</button>
+                <button type="submit" form="add-comments" id="addNote" class="btn btn-primary">add comment</button>
             </div>
         </form>
     </div>
@@ -71,6 +185,29 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.js" integrity="sha512-+UiyfI4KyV1uypmEqz9cOIJNwye+u+S58/hSwKEAeUMViTTqM9/L4lqu8UxJzhmzGpms8PzFJDzEqXL9niHyjA==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js" integrity="sha512-XtmMtDEcNz2j7ekrtHvOVR4iwwaD6o/FUJe6+Zq+HgcCsk3kj4uSQQR8weQ2QVj1o0Pk6PwYLohm206ZzNfubg==" crossorigin="anonymous"></script>
+<script src="DB.js"></script>
 <script src="scripts.js"></script>
+<!--<script src="form-validate.js"></script>-->
+<script>
+    (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.getElementsByClassName('needs-validation');
+            // Loop over them and prevent submission
+            var validation = Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+</script>
 </body>
 </html>
